@@ -12,3 +12,11 @@ app.listen(port,()=>{
 app.get("/",(req,res)=>{
     res.json({msg:"Hello World"});
 })
+
+app.get("/page1",(req,res)=>{
+    res.json({msg:"This is Page 1"});
+})
+
+app.get("/page2",(req,res)=>{
+    res.json({msg:"This is Another Page"});
+})
