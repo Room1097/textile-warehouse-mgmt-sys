@@ -5,10 +5,7 @@ const app = express();
 const cors = require('cors');
 const fs = require('fs');
 
-// Middleware
 app.use(cors());
-
-// Database Connection
 const conn = mysql.createConnection({
     host: "tdbms.mysql.database.azure.com",
     user: "ROOM1097",
@@ -18,7 +15,7 @@ const conn = mysql.createConnection({
     ssl:{ca:fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
 });
 
-
+app.use(express.json());
 conn.connect((err) => {
     if (err) {
         console.error('Error connecting to database: ' + err.stack);
@@ -32,8 +29,7 @@ app.get("/", (req, res) => {
     res.json({ msg: "Hello World" });
 });
 
-app.get("/page1", async (req, res) => {
-    console.log("Hello");
+app.get("/page1",  (req, res) => {
     try {
         conn.query("SELECT val from test where id = 1", (error, results, fields) => {
             if (error) {
@@ -70,8 +66,56 @@ app.get("/page2", (req, res) => {
     }
 });
 
-// Start the server
-const port = process.env.PORT || 3000;
+app.get("/api/supplier",(req,res)=>{
+    try {
+        conn.query("SELECT * FROM SUPPLIER", (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            console.log(results);
+            res.json( results );
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+app.post("/api/supplier", (req, res) => {
+    const supplier_name = req.body.S_name;
+    try {
+        conn.query("INSERT INTO supplier (S_name) VALUES (?)", [supplier_name], (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            // console.log(results);
+            res.json(results);
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get("/api/supplier/:id",(req,res)=>{
+    const id = parseInt(req.params.id); 
+    try {
+        conn.query(`SELECT * FROM SUPPLIER WHERE Sid = ${id}`, (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database supplier specific: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            console.log(results);
+            
+            res.json( results );
+        });
+    } catch (error) {
+        console.error("Error querying database supplier specific: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+
+const port = process.env.PORT || 8080;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
