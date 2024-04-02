@@ -24,10 +24,10 @@ const SupplierForm = () => {
     fetch("http://localhost:3001/api/supplier", {
       method: "POST",
       headers: {
-        'Content-Type' : 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "S_name": data.name,
+        S_name: data.name,
       }),
     }).then((res) => {
       res.json();
@@ -44,7 +44,9 @@ const SupplierForm = () => {
           </Label>
           <Input type="text" placeholder="John Doe" {...register("name")} />
         </div>
-        <Button className="bg-zinc-200 text-black hover:bg-zinc-100">Submit</Button>
+        <Button className="bg-zinc-200 text-black hover:bg-zinc-100">
+          Submit
+        </Button>
       </form>
     </div>
   );
