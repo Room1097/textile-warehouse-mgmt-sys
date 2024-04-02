@@ -10,10 +10,8 @@ export default function Supplier() {
       <h1 className="text-xl pt-5">Add a Supplier</h1>
       <SupplierForm />
       <Separator className="bg-zinc-900"/>
-      <h1 className="text-xl pt-5">Exisitng Supplier</h1>
+      <h1 className="text-xl py-5">Existing Suppliers</h1>
       <SupplierInfo />
-
-
     </div>
   );
 }

@@ -36,15 +36,15 @@ const SupplierForm = () => {
   };
 
   return (
-    <div className="flex w-full">
-      <form action="" onSubmit={handleSubmit(submitData)} className="w-[40vw]">
+    <div className="flex w-[80vw] pb-4">
+      <form action="" onSubmit={handleSubmit(submitData)} className="w-full">
         <div className="flex w-full gap-4 pt-4 justify-center items-center">
           <Label className="w-[12vw]" htmlFor="text">
             Supplier Name
           </Label>
           <Input type="text" placeholder="John Doe" {...register("name")} />
         </div>
-        <Button variant="secondary">Submit</Button>
+        <Button className="bg-zinc-200 text-black hover:bg-zinc-100">Submit</Button>
       </form>
     </div>
   );
