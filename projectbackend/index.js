@@ -25,45 +25,6 @@ conn.connect((err) => {
 });
 
 
-app.get("/", (req, res) => {
-    res.json({ msg: "Hello World" });
-});
-
-app.get("/page1",  (req, res) => {
-    try {
-        conn.query("SELECT val from test where id = 1", (error, results, fields) => {
-            if (error) {
-                console.error("Error querying database: " + error.message);
-                return res.status(500).json({ error: "Internal Server Error" });
-            }
-            console.log("Hello");
-            console.log(results);
-            
-            res.json( results[0] );
-        });
-    } catch (error) {
-        console.error("Error querying database: " + error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
-app.get("/page2", (req, res) => {
-    try {
-        conn.query("SELECT val from test where id = 2", (error, results, fields) => {
-            if (error) {
-                console.error("Error querying database: " + error.message);
-                return res.status(500).json({ error: "Internal Server Error" });
-            }
-            console.log("Hello");
-            console.log(results);
-            
-            res.json( results[0] );
-        });
-    } catch (error) {
-        console.error("Error querying database: " + error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
-
 app.get("/api/supplier",(req,res)=>{
     try {
         conn.query("SELECT * FROM SUPPLIER", (error, results, fields) => {
@@ -170,6 +131,82 @@ app.get("/api/raw/:id",(req,res)=>{
         });
     } catch (error) {
         console.error("Error querying database supplier specific: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get("/api/supply",(req,res)=>{
+    try {
+        conn.query("SELECT * FROM SUPPLY", (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            console.log(results);
+            res.json( results );
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.post("/api/supply", (req, res) => {
+    const Rid = req.body.Rid;
+    const Sid = req.body.Sid;
+    const S_weight = req.body.S_weight;
+
+    if (!Rid||!Sid||!S_weight) {
+        console.error("Missing fields");
+        return res.status(400).send({message:'Send all required fields'});
+    }
+    try {
+        conn.query("INSERT INTO Supply (Rid, Sid, S_weight) VALUES (?, ?, ?)", [Rid,Sid,S_weight], (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            // console.log(results);
+            res.json(results);
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.get("/api/product",(req,res)=>{
+    try {
+        conn.query("SELECT * FROM PRODUCT_MATERIAL", (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            console.log(results);
+            res.json( results );
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+app.post("/api/product", (req, res) => {
+    const P_name = req.body.P_name;
+    const P_color = req.body.P_color;
+    const gsm = req.body.gsm;
+    const meter_per_KG = req.body.meter_per_KG;
+    if (!P_name||!P_color||!gsm||!meter_per_KG) {
+        console.error("Missing fields");
+        return res.status(400).send({message:'Send all required fields'});
+    }
+    try {
+        conn.query("INSERT INTO Product_material (P_name, P_weight, P_color, gsm, meter_per_kg) VALUES (?, ?, ?, ?, ?)", [P_name,0,P_color,gsm,meter_per_KG], (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            // console.log(results);
+            res.json(results);
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
