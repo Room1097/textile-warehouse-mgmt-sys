@@ -5,10 +5,12 @@ import { HiHome } from "react-icons/hi2";
 import { MdInventory } from "react-icons/md";
 import { FaGear } from "react-icons/fa6";
 import { GiStockpiles } from "react-icons/gi";
+import { FaUserNinja } from "react-icons/fa";
 
 const Sidebar = () => {
   const links = [
     { href: "/", text: "Home", icon: <HiHome /> },
+    { href: "/supplier", text: "Suppliers", icon: <FaUserNinja /> },
     { href: "/inventory", text: "Inventory", icon: <MdInventory /> },
     { href: "/process", text: "Processes", icon: <FaGear /> },
     { href: "/stock", text: "Stock", icon: <GiStockpiles /> },
