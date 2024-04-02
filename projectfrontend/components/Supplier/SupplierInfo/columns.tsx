@@ -7,11 +7,11 @@ export type SupplierType = {
 
 export const columns: ColumnDef<SupplierType>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "Sid",
     header: "Supplier ID",
   },
   {
-    accessorKey: "name",
+    accessorKey: "S_name",
     header: "Supplier Name",
   },
 ];

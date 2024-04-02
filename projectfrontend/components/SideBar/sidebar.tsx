@@ -17,7 +17,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-[20vw] bg-zinc-300 h-screen flex flex-col">
+    <div className="w-[20vw] bg-zinc-300  h-screen flex flex-col">
       <div className="h-[8vh] w-[20vw] flex items-center justify-center gap-2 text-xl border-2 border-zinc-600 border-b-0">
         T.W.M.S. <LuWarehouse />
       </div>
