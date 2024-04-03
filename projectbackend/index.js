@@ -14,7 +14,6 @@ const conn = mysql.createConnection({
     port: 3306,
     ssl:{ca:fs.readFileSync("./DigiCertGlobalRootCA.crt.pem")}
 });
-
 app.use(express.json());
 conn.connect((err) => {
     if (err) {
@@ -23,8 +22,6 @@ conn.connect((err) => {
     }
     console.log('Connected to database as id ' + conn.threadId);
 });
-
-
 app.get("/api/supplier",(req,res)=>{
     try {
         conn.query("SELECT * FROM SUPPLIER", (error, results, fields) => {
@@ -136,7 +133,7 @@ app.get("/api/raw/:id",(req,res)=>{
 });
 app.get("/api/supply",(req,res)=>{
     try {
-        conn.query("SELECT * FROM SUPPLY", (error, results, fields) => {
+        conn.query("SELECT * FROM supplier_raw_material_supply", (error, results, fields) => {
             if (error) {
                 console.error("Error querying database: " + error.message);
                 return res.status(500).json({ error: "Internal Server Error" });
@@ -210,10 +207,69 @@ app.post("/api/product", (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+app.get("/api/progress",(req,res)=>{
+    
+    try {
+        conn.query("SELECT * FROM raw_material_progress_product_material",(error,results,fields)=>{
+            if(error){
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            res.json(results)
+        })
+        
+    } catch (error) {
+        console.error("Error querying database: "+ error.message);
+        res.status(500).json({error:"Internal Server Error"})
+    }
+})
+app.post("/api/progress", (req, res) => {
+    const Pid = req.body.Pid;
+    const Rid = req.body.Rid;
+    const Used_weight = req.body.Used_weight;
+    const machine_no = req.body.machine_no;
+    if (!Rid||!Pid||!Used_weight||!machine_no) {
+        console.error("Missing fields");
+        return res.status(400).send({message:'Send all required fields'});
+    }
+    try {
+        conn.query("INSERT INTO Progress (Rid, Pid, Used_weight, machine_no, is_complete, produced_weight) VALUES (?,?,?,?,false,0);", [Rid,Pid,Used_weight,machine_no], (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            // console.log(results);
+            res.json(results);
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+app.patch("/api/progress/:id", (req, res) => {
+    
+    const Produced_weight = req.body.Produced_weight;
+    const id = parseInt(req.params.id);
+    if (!Produced_weight) {
+        console.error("Missing field");
+        return res.status(400).send({message:'Send required field'});
+    }
+    try {
+        conn.query("UPDATE progress SET produced_weight = ?,is_complete = true WHERE pro_id = ?;", [Produced_weight,id], (error, results, fields) => {
+            if (error) {
+                console.error("Error querying database: " + error.message);
+                return res.status(500).json({ error: "Internal Server Error" });
+            }
+            // console.log(results);
+            res.json(results);
+        });
+    } catch (error) {
+        console.error("Error querying database: " + error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
-
-
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
