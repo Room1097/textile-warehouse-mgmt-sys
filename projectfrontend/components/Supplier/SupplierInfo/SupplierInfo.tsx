@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 
 import { SupplierType, columns } from "./columns";
@@ -7,7 +7,7 @@ import { DataTable } from "./data-table";
 const SupplierInfo = () => {
   const [data, setData] = useState<SupplierType[]>([]);
 
-   async function getData(): Promise<SupplierType[]> {
+  async function getData(): Promise<SupplierType[]> {
     try {
       const response = await fetch("http://localhost:3001/api/supplier");
       if (!response.ok) {
@@ -29,9 +29,11 @@ const SupplierInfo = () => {
     fetchData();
   }, []);
 
-  return <div>
-    <DataTable columns={columns} data={data}/>
-  </div>; 
+  return (
+    <div>
+      <DataTable columns={columns} data={data} />
+    </div>
+  );
 };
 
 export default SupplierInfo;
