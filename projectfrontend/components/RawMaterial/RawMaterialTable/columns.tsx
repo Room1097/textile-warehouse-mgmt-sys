@@ -16,7 +16,7 @@ export const columns: ColumnDef<RawMaterialType>[] = [
   },
   {
     accessorKey: "R_name",
-    header: "Raw Material Color Name",
+    header: "Raw Material Name",
   },
   {
     accessorKey: "R_color",
