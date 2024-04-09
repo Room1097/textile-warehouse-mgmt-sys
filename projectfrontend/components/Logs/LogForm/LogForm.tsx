@@ -1,10 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { RawMaterialType } from "@/components/RawMaterial/RawMaterialTable/columns";
-import { z } from "zod";
-
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,199 +17,199 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 
-const logFormSchema = z.object({
-  rawMaterial: z.string().min(2).max(30),
-  rawColor: z.string().min(2).max(12),
-  rawDenier: z.string(),
-  rawFilament: z.string(),
+const FormSchema = z.object({
+  rid: z.string({
+    required_error: "Please select a Material.",
+  }),
+  sid: z.string({
+    required_error: "Please select a Supplier.",
+  }),
+  wt: z.string({
+    required_error: "Please enter a Weight.",
+  }),
 });
 
-const LogForm = () => {
-  const form = useForm<z.infer<typeof logFormSchema>>({
-    resolver: zodResolver(logFormSchema),
-    defaultValues: {
-      rawMaterial: "",
-      rawColor: "",
-      rawDenier: "",
-      rawFilament: "",
-    },
+export default function LogForm() {
+  const router = useRouter();
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(values: z.infer<typeof logFormSchema>) {
-    const denier = parseInt(values.rawDenier);
-    const filament = parseInt(values.rawFilament);
-    console.log(values);
-    console.log(denier);
-    console.log(filament);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const rID = parseInt(data.rid);
+    const sID = parseInt(data.sid);
+    const WT = parseInt(data.wt);
+
+    fetch("http://localhost:3001/api/supply", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Sid: sID,
+        Rid: rID,
+        S_weight: WT,
+      }),
+    }).then((res) => {
+      res.json();
+    });
   }
 
- 
-  const [data, setData] = useState<any>([]);
-  
+  const [rawMaterialData, setRawMaterialData] = useState<any[]>([]);
+  const [supplierData, setSupplierData] = useState<any[]>([]);
 
-  async function getData() {
-    try {
-      const response = await fetch("http://localhost:3001/api/raw");
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+  useEffect(() => {
+    async function fetchRawData() {
+      try {
+        const response = await fetch("http://localhost:3001/api/raw");
+        if (!response.ok) {
+          throw new Error("Failed to fetch raw material data");
+        }
+        const jsonData = await response.json();
+        setRawMaterialData(jsonData);
+      } catch (error) {
+        console.error("Error fetching raw material data:", error);
       }
-      const jsonData = await response.json();
-      console.log(response);
-      // setData(jsonData);
-      return jsonData;
-
-    } catch (error) {
-      console.error("Error fetching supplier data:", error);
-      return [];
     }
-  }
-useEffect( ()=>{
-  async function fetchData() {
-    const fetchedData = await getData();
-    setData(fetchedData);
-    console.log(fetchedData);
-    
-  }
-  fetchData();
-},[])
+    fetchRawData();
+  }, []);
 
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     setData(getData())
-  //   }
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    async function fetchSupplierData() {
+      try {
+        const response = await fetch("http://localhost:3001/api/supplier");
+        if (!response.ok) {
+          throw new Error("Failed to fetch supplier data");
+        }
+        const jsonData = await response.json();
+        setSupplierData(jsonData);
+      } catch (error) {
+        console.error("Error fetching supplier data:", error);
+      }
+    }
+    fetchSupplierData();
+  }, []);
 
   return (
-    <div className="w-full pt-8">
-      <Card className="w-[60vw]">
-        <CardHeader>
-          <CardTitle>Create Log</CardTitle>
-          <CardDescription>
-            Insert the details of Raw Materials and Suppliers to create a Log.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="flex gap-16 justify-between">
-                <FormField
-                  control={form.control}
-                  name="rawMaterial"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Raw Material Name</FormLabel>
+    <div className="mt-10 flex flex-col gap-4 w-[60vw] border-2 border-zinc-900 rounded-xl p-5">
+      <h1 className="text-3xl font-bold"> Create Supply Logs</h1>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-11/12 space-y-6"
+        >
+          <div>
+            <FormField
+              control={form.control}
+              name="rid"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Raw Material Details</FormLabel>
+
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a Raw Material" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {rawMaterialData.map((item: any, index: number) => (
+                        <SelectItem key={index} value={String(item.Rid)}>
+                          <div className="flex gap-8 capitalize">
+                            <div>Material: {item.R_name}</div>
+                            <div>Color: {item.R_color}</div>
+                            <div>Deniers: {item.denier}</div>
+                            <div>
+                              Number of Filaments: {item.no_of_filaments}
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="flex justify-between">
+            <div className="w-7/12">
+              <FormField
+                control={form.control}
+                name="sid"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Supplier Details</FormLabel>
+
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <Select>
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Fruits</SelectLabel>
-
-                              {data.map((item : any, index : any) => (
-                                <SelectItem key={index} value={item.R_color}>
-                                  {item.R_color}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a Supplier" />
+                        </SelectTrigger>
                       </FormControl>
+                      <SelectContent>
+                        {supplierData.map((item: any, index: number) => (
+                          <SelectItem key={index} value={String(item.Sid)}>
+                            <div className="flex gap-4 capitalize">
+                              <div>Name: {item.S_name}</div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rawColor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Color</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Blue, Black, White, etc."
-                          {...field}
-                          className="w-[25vw]"
-                        />
-                      </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="w-1/3">
+              <FormField
+                control={form.control}
+                name="wt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Weight</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter in Kg"
+                        {...field}
+                      />
+                    </FormControl>
 
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="flex gap-16 justify-between">
-                <FormField
-                  control={form.control}
-                  name="rawDenier"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Deniers</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter Number of Deniers"
-                          {...field}
-                          type="number"
-                          className="w-[25vw]"
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="rawFilament"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of Filaments</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter Number of Filaments"
-                          {...field}
-                          className="w-[25vw]"
-                        />
-                      </FormControl>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <Button type="submit" className="active:scale-95">
-                Submit
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
+      <div className="text-zinc-500 text-sm flex justify-between mt-5 gap-">
+        <Button variant="link">
+          <Link href="/inventory">Don't See Your Raw Material? Add Here!</Link>
+        </Button>
+        <Button variant="link">
+          <Link href="/supplier">Don't See Your Supplier? Add Here!</Link>
+        </Button>
+      </div>
     </div>
   );
-};
-
-export default LogForm;
+}
