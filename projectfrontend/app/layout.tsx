@@ -18,9 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex gap-8">
+        <div className="">
           <Sidebar />
-          {children}
+          <div className="pl-[16rem] pr-8 w-full">{children}</div>
         </div>
       </body>
     </html>

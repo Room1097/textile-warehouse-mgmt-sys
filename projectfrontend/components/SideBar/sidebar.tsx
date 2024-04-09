@@ -18,7 +18,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="bg-zinc-300  h-screen flex flex-col">
+    <div className="bg-zinc-300 fixed h-full inset-y-0 flex flex-col">
       <div className="h-[8vh] flex items-center justify-center gap-2 text-xl border-2 border-zinc-600 border-b-0">
         T.W.M.S. <LuWarehouse />
       </div>
