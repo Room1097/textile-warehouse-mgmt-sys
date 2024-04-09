@@ -99,7 +99,8 @@ export default function LogForm() {
   }, []);
 
   return (
-    <div className="mt-10 w-[60vw] border-2 border-zinc-900 rounded-xl p-5">
+    <div className="mt-10 flex flex-col gap-4 w-[60vw] border-2 border-zinc-900 rounded-xl p-5">
+      <h1 className="text-3xl font-bold"> Create Supply Logs</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -201,6 +202,14 @@ export default function LogForm() {
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+      <div className="text-zinc-500 text-sm flex justify-between mt-5 gap-">
+        <Button variant="link">
+          <Link href="/inventory">Don't See Your Raw Material? Add Here!</Link>
+        </Button>
+        <Button variant="link">
+          <Link href="/supplier">Don't See Your Supplier? Add Here!</Link>
+        </Button>
+      </div>
     </div>
   );
 }
