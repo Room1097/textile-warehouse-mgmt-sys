@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 import { ZodType, z } from "zod";
+import { useRouter } from "next/navigation";
 
 type RawMaterial = {
   r_name: string;
@@ -28,7 +29,7 @@ const RawMaterialForm = () => {
     denier: 0,
     filament: 0,
   });
-
+  const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const numericValue = parseInt(value);
@@ -56,6 +57,7 @@ const RawMaterialForm = () => {
         .then((res) => {
           if (res.ok) {
             console.log("Data submitted successfully");
+            router.refresh();
           } else {
             console.error("Failed to submit data");
           }
