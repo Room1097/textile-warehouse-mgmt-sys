@@ -61,36 +61,42 @@ const LogForm = () => {
     console.log(filament);
   }
 
-  const fruits = ["apple", "banana", "pineapple"];
+ 
+  const [data, setData] = useState<any>([]);
+  
 
-  const [rawMaterial, setRawMaterial] = useState([]);
-  const [rawColor, setRawColor] = useState([]);
-  const [rawDenier, setRawDenier] = useState([]);
-  const [rawFilament, setRawFilament] = useState([]);
-  const [data, setData] = useState<RawMaterialType[]>([]);
-
-  async function getData(): Promise<RawMaterialType[]> {
+  async function getData() {
     try {
       const response = await fetch("http://localhost:3001/api/raw");
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
       const jsonData = await response.json();
+      console.log(response);
+      // setData(jsonData);
       return jsonData;
+
     } catch (error) {
       console.error("Error fetching supplier data:", error);
       return [];
     }
   }
+useEffect( ()=>{
+  async function fetchData() {
+    const fetchedData = await getData();
+    setData(fetchedData);
+    console.log(fetchedData);
+    
+  }
+  fetchData();
+},[])
 
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedData = await getData();
-      setData(fetchedData);
-      setRawColor(fetchedData.color)
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     setData(getData())
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="w-full pt-8">
@@ -120,9 +126,9 @@ const LogForm = () => {
                             <SelectGroup>
                               <SelectLabel>Fruits</SelectLabel>
 
-                              {fruits.map((item, index) => (
-                                <SelectItem key={index} value={item}>
-                                  {item.charAt(0).toUpperCase() + item.slice(1)}
+                              {data.map((item : any, index : any) => (
+                                <SelectItem key={index} value={item.R_color}>
+                                  {item.R_color}
                                 </SelectItem>
                               ))}
                             </SelectGroup>

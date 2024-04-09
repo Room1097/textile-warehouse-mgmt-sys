@@ -25,6 +25,7 @@ const RawMaterialTable = () => {
     async function fetchData() {
       const fetchedData = await getData();
       setData(fetchedData);
+      console.log(data)
     }
     fetchData();
   }, []);
