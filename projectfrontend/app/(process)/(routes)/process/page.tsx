@@ -1,7 +1,10 @@
+import StartProgress from "@/components/Progress/StartProgress/startProgress";
+import CompleteProgress from "@/components/Progress/CompleteProgress/completeProgress";
 export default function Process() {
-    return(
-        <div>
-            <h1>Process Page</h1>
-        </div>
-    )
+  return (
+    <div>
+      <StartProgress />
+      <CompleteProgress />
+    </div>
+  );
 }

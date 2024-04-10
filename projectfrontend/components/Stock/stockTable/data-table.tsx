@@ -73,7 +73,7 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
+                    <TableCell key={cell.id} className="capitalize">
                       {" "}
                       {/* Added className for centering */}
                       {flexRender(
