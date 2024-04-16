@@ -50,7 +50,20 @@ const StartProgress = () => {
   });
 
   function onSubmit(values: z.infer<typeof progressSchema>) {
-    console.log(values);
+    fetch("http://localhost:3001/api/progress", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        Pid: values.pID,
+        Rid: values.rID,
+        Used_weight: values.WT,
+        machine_no: values.machineID,
+      }),
+    }).then((res) => {
+      res.json();
+    });
   }
   const [rawMaterialData, setRawMaterialData] = useState<any[]>([]);
   const [productMaterialData, setProductMaterialData] = useState<any[]>([]);
@@ -186,7 +199,7 @@ const StartProgress = () => {
             <div className="w-5/12">
               <FormField
                 control={form.control}
-                name="WT"
+                name="machineID"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Machine ID</FormLabel>

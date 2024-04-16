@@ -43,30 +43,62 @@ type ProcessType = {
   Product_name: string;
   machine_no: number;
   is_complete: number;
+  Pro_id: number;
 };
 
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
+z;
+
+const submitProcessSchema = z.object({
+  weight: z.coerce.number(),
+  id: z.coerce.number(),
+});
 
 const ProgressTable = () => {
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    console.log("Control reached handleSubmit"); // Log message to verify if control reaches here
+
+    const formData = new FormData(event.currentTarget);
+    const result = submitProcessSchema.safeParse({
+      weight: formData.get("weight"),
+      id: formData.get("id"),
+    });
+
+    if (!result.success) {
+      console.error(result.error);
+      return;
+    }
+
+    console.log(result)
+
     try {
-      const response = await fetch(`http://localhost:3001/api/progress/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          
-        }),
-      }).then((res) => {
-        res.json();
-      });
+      const response = await fetch(
+        `http://localhost:3001/api/progress/${result.data.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            Produced_weight: result.data.weight,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to submit data");
+      }
+
+      // Optionally, you may want to update the data after submission
+      // Example: fetchData();
     } catch (error) {
-      console.error("Error fetching supplier data:", error);
-      return [];
+      console.error("Error submitting data:", error);
     }
   };
+
   const [data, setData] = useState<ProcessType[]>([]);
 
   async function getData(): Promise<ProcessType[]> {
@@ -105,7 +137,7 @@ const ProgressTable = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Raw Material</TableHead>
-                <TableHead>Raw Material Quantity Used</TableHead>
+                <TableHead>Quantity Used(KG.)</TableHead>
                 <TableHead>Processed Good</TableHead>
                 <TableHead>Machine Number</TableHead>
 
@@ -142,8 +174,22 @@ const ProgressTable = () => {
                               Add the Weight of Produced Good.
                             </DialogDescription>
                           </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
+                          <form
+                            className="flex flex-col gap-6"
+                            onSubmit={handleSubmit}
+                          >
+                            <div className="grid grid-cols-4 gap-6">
+                              <Label htmlFor="id" className="text-right">
+                                Process ID
+                              </Label>
+                              <Input
+                                id="id"
+                                value={item.Pro_id}
+                                className="col-span-3"
+                                disabled
+                              />
+                            </div>
+                            <div className="grid grid-cols-4 gap-6">
                               <Label htmlFor="weight" className="text-right">
                                 Produced Weight
                               </Label>
@@ -153,12 +199,16 @@ const ProgressTable = () => {
                                 className="col-span-3"
                               />
                             </div>
-                          </div>
-                          <DialogFooter>
-                            <Button type="submit" onClick={handleSubmit}>
-                              Save changes
-                            </Button>
-                          </DialogFooter>
+
+                            <div className="flex justify-end">
+                              <Button
+                                className="w-[5vw] active:scale-95"
+                                type="submit"
+                              >
+                                Submit
+                              </Button>
+                            </div>
+                          </form>
                         </DialogContent>
                       </Dialog>
                     </TableCell>
