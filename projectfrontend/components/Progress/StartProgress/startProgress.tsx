@@ -87,7 +87,7 @@ const StartProgress = () => {
 
   return (
     <div className="flex mt-10 w-[70vw] flex-col gap-12 border-2 border-zinc-900 p-5 rounded-xl">
-      <h1 className="font-bold text-3xl">Create Progress</h1>
+      <h1 className="font-bold text-3xl">Start a Process</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
