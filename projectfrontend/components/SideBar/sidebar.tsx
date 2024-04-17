@@ -9,7 +9,6 @@ import { FaUserNinja } from "react-icons/fa";
 
 const Sidebar = () => {
   const links = [
-    { href: "/", text: "Home", icon: <HiHome /> },
     { href: "/supplier", text: "Suppliers", icon: <FaUserNinja /> },
     { href: "/inventory", text: "Inventory", icon: <MdInventory /> },
     { href: "/logs", text: "Logs", icon: <GiNotebook /> },
