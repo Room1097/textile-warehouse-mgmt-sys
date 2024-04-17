@@ -32,7 +32,8 @@ const SupplierForm = () => {
     }).then((res) => {
       res.json();
     });
-    reset();
+    window.location.reload()
+
   };
 
   return (

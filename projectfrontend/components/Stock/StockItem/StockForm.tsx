@@ -66,6 +66,7 @@ const StockForm = () => {
     } else {
       console.error("Form validation failed:", validationResult.error);
     }
+    window.location.reload()
   };
 
   return (

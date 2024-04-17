@@ -64,6 +64,7 @@ const StartProgress = () => {
     }).then((res) => {
       res.json();
     });
+    window.location.reload()
   }
   const [rawMaterialData, setRawMaterialData] = useState<any[]>([]);
   const [productMaterialData, setProductMaterialData] = useState<any[]>([]);

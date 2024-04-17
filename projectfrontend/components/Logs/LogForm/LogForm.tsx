@@ -61,6 +61,7 @@ export default function LogForm() {
     }).then((res) => {
       res.json();
     });
+    window.location.reload()
   }
 
   const [rawMaterialData, setRawMaterialData] = useState<any[]>([]);

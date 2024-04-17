@@ -23,13 +23,13 @@ const rawMaterialSchema: ZodType<RawMaterial> = z.object({
 });
 
 const RawMaterialForm = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<RawMaterial>({
     r_name: "",
     r_color: "",
     denier: 0,
     filament: 0,
   });
-  const router = useRouter();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const numericValue = parseInt(value);
@@ -57,7 +57,6 @@ const RawMaterialForm = () => {
         .then((res) => {
           if (res.ok) {
             console.log("Data submitted successfully");
-            router.refresh();
           } else {
             console.error("Failed to submit data");
           }
@@ -65,10 +64,11 @@ const RawMaterialForm = () => {
         .catch((error) => {
           console.error("Error occurred while submitting data:", error);
         });
-    } else {
-      console.error("Form validation failed:", validationResult.error);
-    }
-  };
+      } else {
+        console.error("Form validation failed:", validationResult.error);
+      }
+      window.location.reload()
+    };
 
   return (
     <div className="">

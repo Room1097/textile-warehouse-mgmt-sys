@@ -53,6 +53,7 @@ const ProcessSubmitForm = (id: { id: number }) => {
     } catch (error) {
       console.error("Error submitting data:", error);
     }
+    window.location.reload()
   }
   return (
     <Form {...form}>
