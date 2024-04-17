@@ -49,6 +49,7 @@ type ProcessType = {
 import { MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
+import ProcessSubmitForm from "./ProcessSubmitForm";
 z;
 
 const submitProcessSchema = z.object({
@@ -174,41 +175,7 @@ const ProgressTable = () => {
                               Add the Weight of Produced Good.
                             </DialogDescription>
                           </DialogHeader>
-                          <form
-                            className="flex flex-col gap-6"
-                            onSubmit={handleSubmit}
-                          >
-                            <div className="grid grid-cols-4 gap-6">
-                              <Label htmlFor="id" className="text-right">
-                                Process ID
-                              </Label>
-                              <Input
-                                id="id"
-                                value={item.Pro_id}
-                                className="col-span-3"
-                                disabled
-                              />
-                            </div>
-                            <div className="grid grid-cols-4 gap-6">
-                              <Label htmlFor="weight" className="text-right">
-                                Produced Weight
-                              </Label>
-                              <Input
-                                id="weight"
-                                placeholder="Enter in Kilograms"
-                                className="col-span-3"
-                              />
-                            </div>
-
-                            <div className="flex justify-end">
-                              <Button
-                                className="w-[5vw] active:scale-95"
-                                type="submit"
-                              >
-                                Submit
-                              </Button>
-                            </div>
-                          </form>
+                          <ProcessSubmitForm id = {item.Pro_id}/>
                         </DialogContent>
                       </Dialog>
                     </TableCell>
