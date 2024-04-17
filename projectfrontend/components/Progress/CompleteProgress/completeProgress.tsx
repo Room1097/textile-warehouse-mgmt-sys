@@ -32,6 +32,7 @@ type ProcessType = {
   Product_name: string;
   machine_no: number;
   is_complete: number;
+  Weight_after_production: number;
 };
 
 const CompleteProgress = () => {
@@ -76,8 +77,9 @@ const CompleteProgress = () => {
                   <span className="sr-only">Progress Table</span>
                 </TableHead>
                 <TableHead>Raw Material</TableHead>
-                <TableHead>Raw Material Quantity Used</TableHead>
+                <TableHead>Quantity Used</TableHead>
                 <TableHead>Processed Good</TableHead>
+                <TableHead>Processed Weight</TableHead>
                 <TableHead>Machine Number</TableHead>
                 <TableHead>Progress Status</TableHead>
                 <TableHead className="w-0">
@@ -86,35 +88,40 @@ const CompleteProgress = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.filter((item)=>item.is_complete === 1).map((item) => (
-                <TableRow>
-                  <TableCell>{item.Rid}</TableCell>
-                  <TableCell className="capitalize">
-                    {item.Raw_material_name}
-                  </TableCell>
-                  <TableCell className="">
-                    {formatNumber(item.Used_weight)}
-                  </TableCell>
-                  <TableCell className="">{item.Product_name}</TableCell>
-                  <TableCell className="">
-                    {formatNumber(item.machine_no)}
-                  </TableCell>
-                  <TableCell className="">
-                    {item.is_complete === 1 ? (
-                      <h1>Completed</h1>
-                    ) : (
-                      <h1>In Progress</h1>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {!item.is_complete && (
-                      <Button variant="ghost">
-                        <Check />
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {data
+                .filter((item) => item.is_complete === 1)
+                .map((item) => (
+                  <TableRow>
+                    <TableCell>{item.Rid}</TableCell>
+                    <TableCell className="capitalize">
+                      {item.Raw_material_name}
+                    </TableCell>
+                    <TableCell className="">
+                      {formatNumber(item.Used_weight)}
+                    </TableCell>
+                    <TableCell className="">{item.Product_name}</TableCell>
+                    <TableCell className="">
+                      {item.Weight_after_production}
+                    </TableCell>
+                    <TableCell className="">
+                      {formatNumber(item.machine_no)}
+                    </TableCell>
+                    <TableCell className="">
+                      {item.is_complete === 1 ? (
+                        <h1>Completed</h1>
+                      ) : (
+                        <h1>In Progress</h1>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {!item.is_complete && (
+                        <Button variant="ghost">
+                          <Check />
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </CardContent>
